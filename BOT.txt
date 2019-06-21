@@ -1,0 +1,55 @@
+﻿var roomName = "4tires";
+var maxPlayers = 12;
+var roomPublic = true;
+var playerName = "Host";
+ 
+/* SETTINGS */
+ 
+var Team = {
+    SPECTATORS: 0,
+    RED: 1,
+    BLUE: 2
+};
+
+
+var room = HBInit({ roomName: roomName, maxPlayers: maxPlayers, public: roomPublic, playerName: playerName});
+    room.setScoreLimit(3);
+    room.setTimeLimit(3);
+
+function updatePlayers() {
+    var players = room.getPlayerList();
+    var numPlayersRed = 0;
+    var numPlayersBlue = 0;
+    for (var i = 0; i < players.length; i++) {
+        if (players[i].team === 1) {
+            numPlayersRed += 1;
+        }
+        else if (players[i].team === 2) {
+            numPlayersBlue += 1;
+        }
+    }
+    if (numPlayersRed < numPlayersBlue) {
+        for (var i = 0; i < players.length; i++) {
+            if (players[i].team === 0 && players[i].id !== 0) {
+                room.setPlayerTeam(players[i].id, 1);
+                break;
+                }
+            }
+        }
+    if (numPlayersRed > numPlayersBlue) {
+        for (var i = 0; i < players.length; i++) {
+            if (players[i].team === 0 && players[i].id !== 0) {
+                room.setPlayerTeam(players[i].id, 2);
+                break;
+            }
+        }
+    }
+    
+    }
+
+room.onPlayerJoin = function (player) {
+    updatePlayers();
+    }
+room.onPlayerLeave = function (player) {
+    updatePlayers();
+    }
